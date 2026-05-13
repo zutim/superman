@@ -1,0 +1,21 @@
+name: superman_app
+description: Superman Clipboard Sync Client
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  web_socket_channel: ^2.4.0
+  mobile_scanner: ^3.5.5
+  flutter_clipboard_manager: ^0.1.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
