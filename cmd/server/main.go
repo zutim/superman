@@ -1,15 +1,15 @@
 package main
 
 import (
-	"fmt"
 	"log"
-	"github.com/myself/superman/internal/clipboard"
+	"net/http"
+	"github.com/myself/superman/internal/server"
 )
 
 func main() {
-	text, err := clipboard.Read()
-	if err != nil {
-		log.Fatalf("failed to read clipboard: %v", err)
-	}
-	fmt.Printf("Current clipboard: %s\n", text)
+	token := "secret123" // Hardcoded for now
+	http.HandleFunc("/ws", server.Handler(token))
+	
+	log.Println("Starting server on :8080...")
+	log.Fatal(http.ListenAndServe(":8080", nil))
 }
