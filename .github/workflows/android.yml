@@ -8,6 +8,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
     steps:
       - uses: actions/checkout@v4
@@ -26,6 +28,8 @@ jobs:
       - name: Build APK
         run: |
           cd android_app
+          # Ensure essential flutter config exists even if not in git
+          flutter create . --platforms=android --overwrite
           flutter pub get
           flutter build apk --release
 
