@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
-import 'package:flutter_clipboard_manager/flutter_clipboard_manager.dart';
 
 void main() => runApp(const SupermanApp());
 
@@ -82,7 +82,7 @@ class _SyncScreenState extends State<SyncScreen> {
       _channel.stream.listen(
         (message) {
           if (message.toString().isNotEmpty) {
-            FlutterClipboardManager.copyToClipBoard(message.toString());
+            Clipboard.setData(ClipboardData(text: message.toString()));
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(content: Text('Copied text from Mac!')),
             );
@@ -98,11 +98,10 @@ class _SyncScreenState extends State<SyncScreen> {
 
   void _pushToMac() async {
     // Read from Android clipboard
-    // Note: Due to Android 10+ restrictions, this only works if app is in foreground
-    // and might require the user to have copied something recently or we use a text field.
-    // We are using a community package for wider compatibility.
-    // As a fallback for demo, we'll send a static text if clipboard is empty.
-    _channel.sink.add("Hello from Android Superman App!");
+    ClipboardData? data = await Clipboard.getData('text/plain');
+    String textToSend = data?.text ?? "Hello from Android Superman App! (Clipboard was empty)";
+    
+    _channel.sink.add(textToSend);
     ScaffoldMessenger.of(context).showSnackBar(
        const SnackBar(content: Text('Pushed to Mac!')),
     );
