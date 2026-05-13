@@ -28,8 +28,12 @@ jobs:
       - name: Build APK
         run: |
           cd android_app
-          # Ensure essential flutter config exists even if not in git
+          # Create missing platforms but it overwrites main.dart
           flutter create . --platforms=android --overwrite
+          
+          # We MUST restore our custom main.dart and pubspec.yaml that flutter create just destroyed
+          git checkout -- lib/main.dart pubspec.yaml android/app/src/main/AndroidManifest.xml
+          
           flutter pub get
           flutter build apk --release
 
