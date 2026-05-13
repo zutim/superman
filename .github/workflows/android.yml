@@ -28,12 +28,16 @@ jobs:
       - name: Build APK
         run: |
           cd android_app
-          # Create missing platforms but it overwrites main.dart
+          
+          # Create platforms, letting Flutter handle all modern Android gradle/manifest setups
           flutter create . --platforms=android --overwrite
           
-          # We MUST restore our custom main.dart and pubspec.yaml that flutter create just destroyed
-          git checkout -- lib/main.dart pubspec.yaml android/app/src/main/AndroidManifest.xml
+          # Only restore our pure Dart code and dependencies
+          git checkout -- lib/main.dart pubspec.yaml
           
+          # Safely inject the CAMERA permission into the newly generated AndroidManifest.xml
+          sed -i '/<application/i \    <uses-permission android:name="android.permission.CAMERA"/>\n    <uses-permission android:name="android.permission.INTERNET"/>' android/app/src/main/AndroidManifest.xml
+
           flutter pub get
           flutter build apk --release
 
